@@ -1,0 +1,23 @@
+# Preliminary research hazard register
+
+This is a learning artifact, not a completed formal safety assessment. Severity below describes a **hypothetical operational misuse consequence**, not a certified classification. Likelihood is **unassessed** for every row: there is no operational dataset or reliability evidence to justify probabilities. All actual work stays in simulation.
+
+| ID | Hazard / possible cause | Potential consequence | Detection / evidence in v0.1 | Mitigation and fallback | Residual work |
+| --- | --- | --- | --- | --- | --- |
+| H01 | Missed heading instruction / pilot response absent | Potentially severe trajectory error | Grace-period heading check; reproducible missed-turn test | Persistent caution, human ownership and reviewed revision | Wrong-direction classification, performance-specific timing, hysteresis |
+| H02 | Incorrect altitude / bad readback | Potentially catastrophic traffic or terrain encounter | Structured identity/value comparison; deviation checks | Unverified readback not acknowledged; human review | Natural language, multiple instructions, sensor uncertainty, terrain |
+| H03 | Conflict missed because CPA altitude appears safe | Potentially catastrophic collision | Horizontal and vertical interval intersection; dedicated regression | Explainable warning and controller review | Wind, intent, nonlinear trajectories, uncertainty, validated thresholds |
+| H04 | Weather appears absent because data stopped | Potentially catastrophic weather encounter | Feed status and age; unknown rather than resolved transition | Human ownership and unavailable assessment | Source latency, polygons, storm evolution, data quality |
+| H05 | Stale track shown as current | Potentially catastrophic conflict missed | Age threshold; frozen last observation; no stale prediction | Explicit data warning and human review | Distinct truth/observation streams, interpolation limits, coverage |
+| H06 | Fault recovery silently increases authority | Potentially severe automation surprise | Ownership state persists through restoration tests | Human must explicitly restore assistance | Multi-controller acknowledgement and authority arbitration |
+| H07 | Acknowledged warning disappears while risk continues | Potentially severe loss of awareness | Acknowledgement separate from condition; severity escalation clears old acknowledgement | Alert remains active; priority changes recorded | Human-factors study and nuisance-alert evaluation |
+| H08 | UI freezes or disconnects | Potentially severe stale situational picture | Browser update watchdog and disconnect test | Commands disabled, visible unavailable state | Independent backend health monitoring and redundant display |
+| H09 | AI invents a clearance or treats injected text as authority | Potentially catastrophic incorrect instruction | No AI model or tool adapter exists in v0.1 | No model authority or radio interface | Isolated parser, calibrated abstention, adversarial evaluation |
+| H10 | Database unavailable or corrupt | Serious loss of evidence/state consistency | Uncaught clock failure stops simulation; API writes may fail | Stop experiment and inspect logs/database | Atomic state/event transactions, fault injection, recovery and backups |
+| H11 | Unauthorized local commands | Potentially serious experiment tampering | Host/origin checks and typed input tests | Loopback binding; single-user use only | Authentication, authorization, rate limiting, audit integrity |
+| H12 | User assumes all aviation hazards are covered | Potentially catastrophic misuse | Prominent simulation notice and feature inventory | No operational integration or transmission | Independent scope review and stakeholder education |
+| H13 | Generic turn/climb assumptions misrepresent an aircraft | Potentially severe invalid forecast | Assumptions visible with each proposal | Conditional screening only; no “safe” verdict | Validated performance data and uncertainty bounds |
+| H14 | Too many alarms obscure a serious condition | Potentially severe delayed intervention | Ranked, deduplicated alerts; acknowledgement and escalation history | Visible text/severity; human retains ownership | Usability trials, urgency metrics, staffing and alarm-fatigue research |
+| H15 | Real position/altitude datums are misinterpreted | Potentially catastrophic spatial error | No real data accepted by current UI/API | Keep fictional plane and one datum | Explicit reference frames, units and conversion validation |
+
+Every implemented mitigation still requires independent review. No row is closed as operationally acceptable. Tests demonstrate selected behaviors under artificial conditions, not real-world risk reduction.

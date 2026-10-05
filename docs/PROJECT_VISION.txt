@@ -1,0 +1,1915 @@
+ORIGINAL PROJECT BRIEF — LONG-TERM VISION, NOT IMPLEMENTED CAPABILITY
+See README.md and docs/SAFETY.md for the v0.1 scope and researched corrections.
+
+I want you to help me design and build a serious long-term aviation research/software project called:
+
+ATC GUARDIAN
+AI-Assisted / Highly Automated Air Traffic Control Safety System
+
+PROJECT VISION
+
+I previously trained as a pilot and earned my Private Pilot Certificate.
+
+One problem I noticed while flying general aviation aircraft is that air traffic controllers are human and can become overloaded.
+
+A controller may be handling many aircraft simultaneously and occasionally:
+
+- forget a planned turn
+- forget to remind an aircraft about a pending instruction
+- issue the wrong altitude
+- miss an incorrect pilot readback
+- focus on higher-priority traffic and temporarily lose track of a smaller aircraft
+- miss developing traffic conflicts
+- overlook deteriorating weather
+- become overloaded with radio communications
+- lose situational awareness during rapidly changing situations
+
+My goal is to explore a future ATC architecture where software maintains continuous awareness of every aircraft and acts as a persistent safety layer.
+
+The long-term concept is NOT simply:
+
+"AI replaces air traffic controllers."
+
+Instead:
+
+AUTOMATION HANDLES REPETITIVE MONITORING
++
+DETERMINISTIC SOFTWARE HANDLES SAFETY RULES
++
+AI ASSISTS WITH INTERPRETATION AND COMMUNICATION
++
+HUMAN CONTROLLERS SUPERVISE THE SYSTEM
++
+HUMANS CAN IMMEDIATELY TAKE CONTROL WHEN NEEDED
+
+Human controllers could eventually work more like highly trained supervisors overseeing automated sectors.
+
+Routine aircraft communications could eventually be generated automatically.
+
+However:
+
+- controllers remain present
+- controllers monitor the displays
+- controllers can intervene instantly
+- pilots can request human ATC communication at any time
+- emergencies automatically prioritize human involvement
+- automation can be disabled immediately
+
+This system must initially exist ONLY as simulation/research software.
+
+It is NOT operational ATC software.
+
+==================================================
+CORE DESIGN PHILOSOPHY
+==================================================
+
+AI ASSISTS.
+DETERMINISTIC SOFTWARE VERIFIES.
+AUTOMATION HANDLES ROUTINE WORK.
+HUMANS REMAIN AVAILABLE AND IN COMMAND.
+
+No generative AI model should ever be the sole authority for a safety-critical decision.
+
+Safety-critical calculations should use deterministic software wherever possible.
+
+==================================================
+1. INDIVIDUAL AIRCRAFT DIGITAL STATE
+==================================================
+
+Every aircraft should have its own continuously maintained digital state.
+
+Example:
+
+Aircraft:
+N123AB
+
+Aircraft Type:
+Cessna 172
+
+Position:
+39.0, -84.3
+
+Altitude:
+3,500 ft
+
+Vertical Rate:
++500 ft/min
+
+Heading:
+270°
+
+Ground Track:
+273°
+
+Groundspeed:
+105 kt
+
+Squawk:
+4271
+
+ATC Sector:
+Approach
+
+Controller:
+Sector A
+
+Current Clearance:
+
+Heading:
+310°
+
+Altitude:
+5,000 ft
+
+Turn:
+Right
+
+Status:
+
+Altitude:
+COMPLYING
+
+Heading:
+PENDING TURN
+
+Readback:
+CONFIRMED
+
+Communication Status:
+NORMAL
+
+Weather Risk:
+MODERATE
+
+Traffic Risk:
+LOW
+
+Terrain Risk:
+LOW
+
+System Confidence:
+HIGH
+
+The system should maintain:
+
+- callsign
+- aircraft type
+- aircraft category
+- ICAO aircraft identifier
+- transponder code
+- ADS-B information
+- latitude
+- longitude
+- altitude
+- pressure altitude
+- vertical rate
+- heading
+- ground track
+- speed
+- destination
+- route
+- assigned heading
+- assigned altitude
+- assigned speed
+- assigned runway
+- expected approach
+- flight phase
+- controller
+- frequency
+- pending instructions
+- active instructions
+- completed instructions
+- last radio transmission
+- pilot readback
+- communication quality
+- weather exposure
+- predicted trajectory
+- traffic conflicts
+- terrain conflicts
+- emergency state
+- automation state
+- human-control state
+
+==================================================
+2. PERSISTENT CLEARANCE MEMORY
+==================================================
+
+A critical concept of the project is:
+
+THE COMPUTER NEVER SIMPLY FORGETS AN ACTIVE CLEARANCE.
+
+Example:
+
+Controller/system issues:
+
+"N123AB, turn right heading three one zero, climb and maintain five thousand."
+
+The system converts this into structured state:
+
+aircraft:
+N123AB
+
+heading:
+310
+
+altitude:
+5000
+
+turn_direction:
+right
+
+status:
+AWAITING READBACK
+
+After correct pilot readback:
+
+status:
+ACKNOWLEDGED
+
+Then:
+
+TURN:
+AWAITING COMPLIANCE
+
+CLIMB:
+IN PROGRESS
+
+The system keeps monitoring the aircraft until each instruction is:
+
+- completed
+- canceled
+- modified
+- superseded
+- rejected
+- escalated
+
+If the aircraft climbs but does not turn:
+
+CAUTION
+
+N123AB
+
+ASSIGNED HDG:
+310
+
+CURRENT HDG:
+270
+
+TURN NOT DETECTED
+
+TIME SINCE CLEARANCE:
+32 SEC
+
+The warning stays active until the condition is resolved.
+
+==================================================
+3. WEATHER INTELLIGENCE ENGINE
+==================================================
+
+Weather must be one of the primary safety systems.
+
+Design a weather engine capable of eventually incorporating legitimate aviation weather data such as:
+
+- METAR
+- TAF
+- radar imagery
+- precipitation
+- lightning
+- convective activity
+- SIGMET information
+- AIRMET information
+- pilot reports
+- winds aloft
+- airport weather
+- runway winds
+- ceiling
+- visibility
+- temperature
+- dew point
+- pressure
+- icing risk
+- turbulence risk
+- freezing level
+- wind shear
+- microburst risk
+- thunderstorms
+- hail risk
+
+Initially simulate this information.
+
+Later architecture may support approved/test aviation weather feeds.
+
+==================================================
+4. WEATHER TRAJECTORY INTERSECTION
+==================================================
+
+Weather should not simply appear on the radar.
+
+The system should determine whether an aircraft's predicted flight path intersects dangerous weather.
+
+Example:
+
+N123AB
+
+Current trajectory intersects:
+
+THUNDERSTORM CELL
+
+ETA:
+4 MINUTES
+
+Intensity:
+SEVERE
+
+Recommended action:
+
+REVIEW HEADING
+
+The system should alert the controller before the aircraft reaches the hazard.
+
+Possible hazards:
+
+- thunderstorm cells
+- heavy precipitation
+- icing
+- turbulence
+- wind shear
+- microbursts
+- low visibility
+- low ceilings
+- extreme winds
+- unsafe crosswind conditions
+- runway weather hazards
+
+==================================================
+5. WEATHER-AWARE CLEARANCE VALIDATION
+==================================================
+
+Before issuing a new heading, altitude, route, approach, or runway assignment, the system should evaluate weather.
+
+Example:
+
+Proposed clearance:
+
+N123AB
+TURN LEFT HEADING 220
+
+System detects:
+
+trajectory crosses severe thunderstorm
+
+Display:
+
+WEATHER CONFLICT
+
+Proposed heading 220 intersects severe weather approximately 7 NM ahead.
+
+Alternative vectors may be required.
+
+The system should never automatically assume a route is safe simply because no aircraft conflict exists.
+
+==================================================
+6. TRAJECTORY PREDICTION
+==================================================
+
+Predict aircraft position using:
+
+- current position
+- velocity
+- heading
+- ground track
+- vertical rate
+- assigned heading
+- assigned altitude
+- route
+- wind information
+
+Prediction intervals:
+
+30 seconds
+60 seconds
+2 minutes
+5 minutes
+10 minutes where useful
+
+Compare projected aircraft positions continuously.
+
+==================================================
+7. AIRCRAFT CONFLICT DETECTION
+==================================================
+
+Continuously calculate predicted Closest Point of Approach.
+
+Detect:
+
+- converging aircraft
+- same-altitude crossings
+- overtaking traffic
+- climbing/descending conflicts
+- merging traffic
+- approach conflicts
+- departure conflicts
+
+Example:
+
+TRAFFIC WARNING
+
+N123AB
+N456CD
+
+TIME TO CLOSEST APPROACH:
+81 SEC
+
+PREDICTED HORIZONTAL SEPARATION:
+0.9 NM
+
+PREDICTED VERTICAL SEPARATION:
+100 FT
+
+SEVERITY:
+CRITICAL
+
+Use configurable thresholds during development.
+
+Do NOT claim simulated thresholds reproduce certified ATC separation requirements.
+
+==================================================
+8. CLEARANCE CONFLICT PREVENTION
+==================================================
+
+Before accepting a clearance, check whether it may create a dangerous condition.
+
+Example:
+
+N123AB
+CLIMB 7000
+
+Another aircraft:
+
+N456CD
+ALTITUDE 7000
+
+Projected trajectories cross.
+
+Display:
+
+CLEARANCE SAFETY WARNING
+
+PROPOSED ALTITUDE:
+7000
+
+POTENTIAL CONFLICT:
+N456CD
+
+The controller must review the issue.
+
+==================================================
+9. READBACK VERIFICATION
+==================================================
+
+Compare issued clearance with pilot readback.
+
+Example:
+
+Issued:
+
+"N123AB climb and maintain five thousand."
+
+Pilot:
+
+"Climb and maintain four thousand, N123AB."
+
+System:
+
+READBACK ERROR
+
+ISSUED:
+5000
+
+READ BACK:
+4000
+
+CONFIRM CORRECTION
+
+Initially use text simulation.
+
+Later research:
+
+speech recognition
+aviation phraseology recognition
+callsign recognition
+noisy-radio speech recognition
+
+AI transcription must include confidence scores.
+
+Low-confidence transcription must trigger human review rather than silently assuming correctness.
+
+==================================================
+10. WEATHER-AWARE APPROACH MONITORING
+==================================================
+
+The system should monitor airport conditions.
+
+Include:
+
+- runway wind
+- crosswind
+- tailwind
+- visibility
+- ceiling
+- storms near airport
+- runway closures
+- runway contamination where data exists
+- approach availability
+- airport weather changes
+
+Example:
+
+RUNWAY WEATHER ALERT
+
+Runway 22
+
+Crosswind component increasing.
+
+Aircraft:
+N123AB
+
+Aircraft category/configuration information may require controller review.
+
+Never claim experimental software knows an aircraft's certified limitations unless verified data exists.
+
+==================================================
+11. TERRAIN AND OBSTACLE AWARENESS
+==================================================
+
+Track terrain/obstacle risk.
+
+Detect:
+
+- unsafe descent
+- terrain convergence
+- mountain proximity
+- obstacle proximity
+- unusually low altitude
+
+Do not replace certified onboard systems such as TAWS.
+
+This is an additional ATC-side awareness layer.
+
+==================================================
+12. RUNWAY SAFETY
+==================================================
+
+Create runway-incursion monitoring.
+
+Track aircraft and simulated ground vehicles.
+
+Detect situations such as:
+
+- aircraft entering occupied runway
+- simultaneous runway crossing
+- aircraft landing while runway is occupied
+- departure while conflicting traffic remains on runway
+- wrong-runway alignment
+- taxiway/runway confusion
+
+Example:
+
+RUNWAY INCURSION WARNING
+
+RUNWAY 22
+
+N123AB entering runway.
+
+N456CD on final.
+
+IMMEDIATE CONTROLLER REVIEW REQUIRED
+
+==================================================
+13. WAKE TURBULENCE AWARENESS
+==================================================
+
+Track aircraft category and sequence where data is available.
+
+Detect situations where smaller aircraft may follow much larger aircraft too closely.
+
+This is especially important for general aviation aircraft.
+
+Never invent aircraft wake categories.
+
+Use validated aircraft metadata.
+
+==================================================
+14. LOST COMMUNICATION MONITORING
+==================================================
+
+Monitor expected radio communication.
+
+Possible states:
+
+NORMAL
+RADIO QUALITY LOW
+NO RESPONSE
+POSSIBLE LOST COMMUNICATION
+
+Detect:
+
+- repeated unanswered calls
+- aircraft deviating without communication
+- communications outage
+- frequency transfer failure
+
+Provide immediate human escalation.
+
+==================================================
+15. TRANSPONDER / EMERGENCY DETECTION
+==================================================
+
+Monitor valid transponder/surveillance indicators where available.
+
+Recognize emergency conditions including appropriate aviation emergency codes and system-reported emergency states.
+
+Examples may include:
+
+general emergency
+radio communication failure
+security-related emergency
+
+Security-sensitive situations must immediately escalate to authorized human controllers.
+
+Do not allow an AI assistant to independently manage security incidents.
+
+==================================================
+16. LOSS OF SURVEILLANCE
+==================================================
+
+The system must detect:
+
+- missing ADS-B
+- stale position data
+- inconsistent surveillance reports
+- impossible aircraft movement
+- corrupted messages
+- abrupt jumps in position
+- incorrect timestamps
+- duplicate aircraft identifiers
+
+Example:
+
+SURVEILLANCE DEGRADED
+
+N123AB
+
+LAST VERIFIED POSITION:
+14 SEC AGO
+
+AUTOMATION RESTRICTED
+
+HUMAN CONTROLLER REVIEW REQUIRED
+
+Never extrapolate indefinitely from stale data.
+
+==================================================
+17. ADS-B / SURVEILLANCE ARCHITECTURE
+==================================================
+
+Research architecture for:
+
+ADS-B Out
+ADS-B In
+Mode S
+transponders
+ICAO identifiers
+position
+altitude
+velocity
+track
+surveillance quality indicators
+
+Initial prototype:
+
+SIMULATION ONLY
+
+Future research:
+
+recorded/test data
+
+Do not connect prototype software to operational ATC infrastructure.
+
+==================================================
+18. SENSOR FUSION
+==================================================
+
+Future architecture should not blindly trust one source.
+
+Design interfaces capable of comparing:
+
+ADS-B
+radar
+flight-plan data
+weather data
+controller input
+airport surface data
+
+If sources disagree:
+
+DATA DISAGREEMENT WARNING
+
+Never silently choose uncertain data.
+
+==================================================
+19. GPS / GNSS FAILURE AND SPOOFING AWARENESS
+==================================================
+
+Research detection concepts for:
+
+GNSS outages
+position anomalies
+navigation-data disagreement
+potential spoofing
+position jumps
+aircraft reporting impossible movement
+
+Do not claim perfect spoofing detection.
+
+Mark uncertain data clearly.
+
+==================================================
+20. CYBERSECURITY
+==================================================
+
+Treat cybersecurity as safety-critical.
+
+Architecture should consider:
+
+authentication
+authorization
+least privilege
+network segmentation
+encrypted communications
+secure updates
+signed software
+audit trails
+access logging
+tamper detection
+rate limiting
+input validation
+intrusion detection
+backup systems
+offline fallback
+supply-chain security
+role-based permissions
+
+AI models must never have unrestricted system privileges.
+
+==================================================
+21. AI FAILURE PROTECTION
+==================================================
+
+Assume the AI can make mistakes.
+
+Possible AI failures:
+
+hallucination
+incorrect interpretation
+incorrect speech recognition
+incorrect recommendation
+model outage
+slow response
+prompt injection
+malicious input
+confidence errors
+
+Therefore:
+
+AI cannot directly modify authoritative aircraft state without validation.
+
+AI recommendations should pass through deterministic safety checks.
+
+All AI output should be traceable.
+
+==================================================
+22. AUTOMATED RADIO COMMUNICATION
+==================================================
+
+Long-term research goal:
+
+automate routine ATC communications.
+
+Example:
+
+System:
+
+"N123AB, turn right heading three one zero, climb and maintain five thousand."
+
+Possible workflow:
+
+AUTOMATION CREATES CLEARANCE
+↓
+SAFETY ENGINE VALIDATES
+↓
+CONTROLLER/SUPERVISOR POLICY CHECK
+↓
+AUTOMATED VOICE TRANSMISSION
+↓
+PILOT READBACK
+↓
+READBACK VERIFICATION
+↓
+SURVEILLANCE CONFIRMS COMPLIANCE
+
+Early versions:
+
+controller approves every transmission.
+
+Later simulation modes may explore increased automation.
+
+==================================================
+23. HUMAN REQUEST MODE
+==================================================
+
+A core design requirement:
+
+A PILOT MAY REQUEST A HUMAN AT ANY TIME.
+
+Example pilot transmission:
+
+"N123AB requesting human controller."
+
+System immediately:
+
+HUMAN CONTACT REQUEST
+
+Aircraft:
+N123AB
+
+Transfer communication to:
+CONTROLLER
+
+Automation Status:
+PAUSED FOR AIRCRAFT
+
+The pilot should then communicate normally with a person.
+
+The human controller may keep control until they choose to return the aircraft to automated assistance.
+
+==================================================
+24. HUMAN SUPERVISION MODEL
+==================================================
+
+The long-term concept is similar to supervised automation.
+
+Instead of one controller manually issuing every routine communication:
+
+Human controllers supervise the sector.
+
+They watch:
+
+radar
+weather
+automation decisions
+conflicts
+aircraft states
+alerts
+communications
+system health
+
+Routine traffic may be managed automatically.
+
+Humans concentrate on:
+
+emergencies
+complex situations
+pilot requests
+unusual situations
+system uncertainty
+weather deviations
+equipment failures
+high-workload periods
+
+Controllers remain capable of taking over ANY aircraft instantly.
+
+==================================================
+25. AUTOMATION TRUST LEVELS
+==================================================
+
+Create configurable automation levels.
+
+LEVEL 0
+Manual ATC
+
+System only monitors and warns.
+
+LEVEL 1
+AI advisory
+
+AI suggests actions.
+
+Human performs communication.
+
+LEVEL 2
+Human-approved automation
+
+System creates instructions.
+
+Controller approves every transmission.
+
+LEVEL 3
+Supervised routine automation
+
+Routine instructions may be automated.
+
+Humans supervise and intervene.
+
+LEVEL 4
+Advanced supervised sector automation
+
+Automation handles most normal traffic.
+
+Human controllers supervise the system and manage exceptions.
+
+Do NOT implement or claim fully autonomous real-world ATC.
+
+These levels are research concepts, not certification categories.
+
+==================================================
+26. EMERGENCY HUMAN TAKEOVER
+==================================================
+
+Certain events should automatically request human involvement.
+
+Examples:
+
+aircraft emergency
+lost communications
+severe weather encounter
+surveillance failure
+runway conflict
+uncertain aircraft identity
+automation failure
+conflicting sensor data
+security event
+pilot requests human
+unusual flight behavior
+system confidence below threshold
+
+Display:
+
+HUMAN INTERVENTION REQUIRED
+
+Automation must fail toward increased human supervision rather than increased autonomous authority.
+
+==================================================
+27. PILOT EMERGENCY PRIORITY
+==================================================
+
+Recognize phrases and states representing potential emergency situations.
+
+Examples:
+
+MAYDAY
+PAN-PAN
+engine failure
+medical emergency
+minimum fuel
+navigation failure
+radio failure
+
+Immediately increase priority.
+
+A human controller should be brought into the loop.
+
+==================================================
+28. TCAS / ACAS COORDINATION PRINCIPLE
+==================================================
+
+The system must recognize that aircraft may receive onboard collision avoidance instructions.
+
+The ATC system must never attempt to override certified airborne collision-avoidance commands.
+
+If onboard collision avoidance causes deviation:
+
+flag the event
+track the aircraft
+alert the controller
+assist after the immediate conflict is resolved
+
+==================================================
+29. AIRCRAFT PERFORMANCE AWARENESS
+==================================================
+
+Do not issue unrealistic instructions.
+
+Account for known aircraft performance where validated information is available.
+
+Potential considerations:
+
+climb rate
+descent rate
+turn performance
+speed range
+aircraft category
+
+Never assume every aircraft has the same capabilities.
+
+==================================================
+30. CONTROLLER WORKLOAD MONITORING
+==================================================
+
+Calculate estimated workload using:
+
+number of aircraft
+traffic convergence
+weather complexity
+number of communications
+number of alerts
+pending clearances
+runway operations
+emergencies
+aircraft transitions
+
+Display:
+
+SECTOR LOAD
+
+LOW
+MODERATE
+HIGH
+CRITICAL
+
+If automation confidence decreases while workload is high:
+
+increase staffing recommendation
+
+Do not simply increase autonomous authority.
+
+==================================================
+31. ALERT PRIORITIZATION
+==================================================
+
+Avoid overwhelming controllers.
+
+Create severity levels:
+
+INFORMATION
+
+ADVISORY
+
+CAUTION
+
+WARNING
+
+CRITICAL
+
+Alerts must be ranked by urgency.
+
+Avoid constant nuisance alerts.
+
+Track alert acknowledgement and resolution.
+
+==================================================
+32. HUMAN-FACTORS DESIGN
+==================================================
+
+The interface must avoid:
+
+information overload
+tiny unreadable text
+ambiguous colors
+constant alarms
+hidden critical information
+automation surprises
+unclear aircraft ownership
+unclear AI reasoning
+
+Controllers should always understand:
+
+WHAT happened
+
+WHICH aircraft
+
+WHY the system is concerned
+
+HOW urgent the issue is
+
+WHAT data produced the alert
+
+==================================================
+33. AUTOMATION EXPLAINABILITY
+==================================================
+
+Every major recommendation should include reasoning.
+
+Example:
+
+RECOMMENDATION
+
+N123AB heading change suggested.
+
+WHY:
+
+Current path enters moderate/severe convective weather in approximately 4 minutes.
+
+Traffic south of aircraft prevents safe southern deviation.
+
+Potential northern deviation available.
+
+The AI should not simply say:
+
+"Turn aircraft left."
+
+==================================================
+34. AUTOMATION CONFIDENCE
+==================================================
+
+Display confidence when interpretation is uncertain.
+
+Example:
+
+VOICE TRANSCRIPTION
+
+"N123AB climb five thousand"
+
+Confidence:
+68%
+
+Action:
+
+HUMAN VERIFICATION REQUIRED
+
+Low-confidence inputs should reduce automation.
+
+==================================================
+35. SYSTEM HEALTH MONITORING
+==================================================
+
+Continuously monitor:
+
+CPU
+memory
+network
+surveillance feeds
+weather feeds
+database
+AI model
+voice subsystem
+clock synchronization
+latency
+message queues
+
+Example:
+
+WEATHER FEED STALE
+
+LAST UPDATE:
+8 MIN AGO
+
+WEATHER AUTOMATION:
+RESTRICTED
+
+==================================================
+36. REDUNDANCY
+==================================================
+
+Design research architecture for redundant:
+
+servers
+data feeds
+databases
+communications
+network paths
+power
+surveillance inputs
+
+The system should never depend on one invisible single point of failure.
+
+==================================================
+37. WATCHDOG SYSTEM
+==================================================
+
+Create watchdog processes.
+
+If a component freezes or behaves abnormally:
+
+isolate component
+alert controller
+restart safely if appropriate
+restrict automation
+preserve aircraft state
+
+==================================================
+38. EVENT RECORDER
+==================================================
+
+Record every important event.
+
+Example:
+
+18:21:03 N123AB TRACK CREATED
+18:22:14 ALTITUDE 3500
+18:23:01 CLEARANCE HDG 310 ALT 5000
+18:23:05 READBACK CORRECT
+18:23:35 TURN NOT DETECTED
+18:23:36 CAUTION GENERATED
+18:23:52 AIRCRAFT TURNING
+18:23:54 CAUTION CLEARED
+
+Also record:
+
+weather alerts
+AI recommendations
+controller overrides
+automation transmissions
+system errors
+data failures
+human takeover
+configuration changes
+
+==================================================
+39. INCIDENT REPLAY
+==================================================
+
+Allow complete scenario replay.
+
+Developers/controllers should be able to replay:
+
+aircraft motion
+radio messages
+weather
+clearances
+AI decisions
+controller actions
+warnings
+
+Useful for:
+
+testing
+training
+debugging
+safety investigation
+
+==================================================
+40. SIMULATION ENGINE
+==================================================
+
+Build a realistic simulated airspace environment.
+
+Allow:
+
+spawn aircraft
+assign callsign
+aircraft type
+position
+altitude
+heading
+speed
+vertical rate
+destination
+
+Simulate:
+
+movement
+turns
+climbs
+descents
+radio communication
+weather
+runways
+airports
+traffic conflicts
+
+==================================================
+41. SAFETY TEST SCENARIOS
+==================================================
+
+Include preset scenarios.
+
+MISSED TURN
+
+WRONG ALTITUDE
+
+INCORRECT READBACK
+
+CROSSING TRAFFIC
+
+LOSS OF SEPARATION
+
+THUNDERSTORM DEVIATION
+
+ICING HAZARD
+
+MICROBURST WARNING
+
+RUNWAY INCURSION
+
+WRONG RUNWAY
+
+WAKE TURBULENCE
+
+RADIO FAILURE
+
+ADS-B FAILURE
+
+GPS ANOMALY
+
+DUPLICATE CALLSIGN
+
+AIRCRAFT EMERGENCY
+
+CONTROLLER OVERLOAD
+
+AI FAILURE
+
+WEATHER DATA FAILURE
+
+SURVEILLANCE DATA FAILURE
+
+PILOT REQUESTS HUMAN
+
+==================================================
+42. TEST EVERY FAILURE MODE
+==================================================
+
+Assume things will fail.
+
+Test:
+
+incorrect data
+missing data
+stale data
+network delay
+duplicate packets
+server outage
+AI outage
+speech recognition failure
+database failure
+incorrect weather
+incorrect position
+clock errors
+controller input mistakes
+pilot readback mistakes
+unexpected aircraft maneuver
+loss of surveillance
+
+==================================================
+43. FAIL-SAFE PRINCIPLE
+==================================================
+
+THE SYSTEM SHOULD FAIL TOWARD LESS AUTOMATION.
+
+Example:
+
+Normal:
+
+SUPERVISED AUTOMATION
+
+Weather feed lost:
+
+RESTRICTED AUTOMATION
+
+Multiple surveillance feeds lost:
+
+HUMAN CONTROL ADVISED
+
+Major system failure:
+
+MANUAL MODE
+
+Do not allow system failures to silently increase autonomy.
+
+==================================================
+44. SECURITY / SAFETY SEPARATION
+==================================================
+
+Separate:
+
+user interface
+AI models
+communications
+safety engine
+surveillance processing
+weather processing
+
+Critical safety software should not depend directly on a conversational AI model.
+
+==================================================
+45. DEVELOPMENT TECHNOLOGY
+==================================================
+
+Suggested stack:
+
+BACKEND
+Python
+FastAPI
+
+FRONTEND
+React
+TypeScript
+
+REALTIME
+WebSockets
+
+DATABASE
+SQLite initially
+PostgreSQL later
+
+TESTING
+pytest
+
+SIMULATION
+Python
+
+CONTAINERIZATION
+Docker later
+
+Keep the initial version easy to run on a Windows development computer.
+
+==================================================
+46. PROJECT STRUCTURE
+==================================================
+
+atc-guardian/
+
+README.md
+LICENSE
+CHANGELOG.md
+ROADMAP.md
+
+docs/
+
+architecture/
+
+backend/
+
+frontend/
+
+simulation/
+
+weather/
+
+surveillance/
+
+safety/
+
+ai/
+
+communications/
+
+scenarios/
+
+tests/
+
+screenshots/
+
+==================================================
+47. CONTROLLER INTERFACE
+==================================================
+
+Create a professional ATC/radar-inspired interface.
+
+Style:
+
+black
+dark charcoal
+white
+amber
+green
+yellow
+red only for serious conditions
+
+Radar shows:
+
+aircraft
+callsign
+altitude
+speed
+heading
+trajectory vectors
+weather
+airports
+runways
+
+Click aircraft:
+
+N123AB
+
+C172
+
+ALT
+035
+
+ASSIGNED
+050
+
+HDG
+270
+
+ASSIGNED
+310
+
+WEATHER
+MODERATE
+
+TRAFFIC
+LOW
+
+CLEARANCE
+TURN PENDING
+
+VOICE
+AUTOMATED
+
+HUMAN REQUEST
+NO
+
+==================================================
+48. WEATHER DISPLAY
+==================================================
+
+Radar should optionally display:
+
+precipitation
+storm cells
+lightning
+wind
+airport weather
+weather warning polygons
+hazard regions
+
+Avoid clutter.
+
+Weather layers should be switchable.
+
+==================================================
+49. SAFETY SIDEBAR
+==================================================
+
+Example:
+
+CRITICAL
+N456CD / N789EF
+TRAFFIC CONFLICT
+00:47
+
+WARNING
+RUNWAY 22
+RUNWAY OCCUPIED
+
+CAUTION
+N123AB
+TURN NOT DETECTED
+
+WEATHER
+N551XY
+CONVECTIVE CELL AHEAD
+
+==================================================
+50. RESEARCH INTO REAL-WORLD AVIATION ENGINEERING
+==================================================
+
+Document, but do not claim compliance with, relevant concepts/standards such as:
+
+FAA certification processes
+software assurance
+DO-178C
+ARP4754A
+DO-254 where appropriate
+aviation cybersecurity
+human factors engineering
+system safety assessments
+hazard analysis
+
+Research how genuinely safety-critical aviation systems are certified.
+
+==================================================
+51. FORMAL HAZARD ANALYSIS
+==================================================
+
+Create documentation identifying hazards.
+
+For each hazard include:
+
+hazard
+cause
+severity
+likelihood
+detection
+mitigation
+fallback mode
+
+Example:
+
+HAZARD:
+Incorrect automated altitude clearance
+
+CAUSE:
+Bad surveillance data
+
+MITIGATION:
+
+multiple data validation
+trajectory check
+conflict engine
+controller alert
+human override
+
+==================================================
+52. ETHICAL DESIGN
+==================================================
+
+Automation should not create a two-tier safety system where small general aviation aircraft receive less attention.
+
+Every aircraft should retain persistent digital tracking regardless of size or airline status.
+
+One motivation for this project is improving continuous awareness of aircraft that may otherwise receive less controller attention during high workload.
+
+==================================================
+53. ADOPTION STRATEGY
+==================================================
+
+The system should be designed around gradual trust.
+
+EARLY STAGE:
+
+Humans control aircraft.
+
+System observes.
+
+NEXT:
+
+System recommends.
+
+NEXT:
+
+System generates instructions humans approve.
+
+NEXT:
+
+Routine transmissions automated under supervision.
+
+NEXT:
+
+Automation handles larger portions of normal traffic while humans oversee the system.
+
+At every stage:
+
+pilot can request human
+
+controller can take over
+
+system can revert to manual
+
+emergencies escalate
+
+automation can be disabled
+
+This allows pilots, controllers, regulators, and the public to develop trust gradually instead of attempting immediate full automation.
+
+==================================================
+54. FIRST RELEASE
+==================================================
+
+Build:
+
+ATC Guardian v0.1
+Surveillance, Weather & Clearance Safety Monitor
+
+Version 0.1 should include:
+
+simulated radar
+
+multiple aircraft
+
+aircraft state models
+
+movement
+
+basic trajectory prediction
+
+clearance tracking
+
+missed-turn detection
+
+altitude deviation detection
+
+basic traffic conflict detection
+
+simulated weather zones
+
+weather trajectory warnings
+
+human takeover control
+
+pilot "request human" simulation
+
+event logging
+
+automated tests
+
+==================================================
+55. DEMONSTRATION
+==================================================
+
+Scenario:
+
+N123AB
+
+Cessna 172
+
+Altitude:
+3500
+
+Heading:
+270
+
+Clearance:
+
+"N123AB, turn right heading three one zero, climb and maintain five thousand."
+
+Pilot correctly reads back clearance.
+
+Aircraft begins climbing.
+
+Aircraft does NOT turn.
+
+After configured monitoring period:
+
+CAUTION
+
+N123AB
+
+TURN NOT DETECTED
+
+ASSIGNED:
+310
+
+CURRENT:
+270
+
+Meanwhile:
+
+weather system detects moderate convective weather ahead.
+
+Display:
+
+WEATHER ADVISORY
+
+N123AB
+
+CURRENT TRAJECTORY INTERSECTS WEATHER
+
+Then the controller reviews the situation.
+
+Pilot may press/request:
+
+REQUEST HUMAN CONTROLLER
+
+Automation pauses aircraft-specific communications.
+
+Human controller takes over.
+
+The controller issues a revised safe clearance.
+
+The aircraft turns.
+
+Clearance status becomes:
+
+COMPLYING
+
+Warnings clear.
+
+Everything is recorded in the event log.
+
+==================================================
+56. PROFESSIONAL GITHUB PRESENTATION
+==================================================
+
+The repository must look like a legitimate long-term engineering research project.
+
+README sections:
+
+ATC GUARDIAN
+
+Problem
+
+Motivation
+
+Pilot Perspective
+
+System Concept
+
+Safety Philosophy
+
+Architecture
+
+Surveillance
+
+Weather Intelligence
+
+Trajectory Prediction
+
+Conflict Detection
+
+Clearance Monitoring
+
+Communications
+
+Human Supervision
+
+Automation Levels
+
+Cybersecurity
+
+Failure Modes
+
+Testing
+
+Screenshots
+
+Installation
+
+Roadmap
+
+Limitations
+
+Future Research
+
+==================================================
+57. README SAFETY NOTICE
+==================================================
+
+Place prominently:
+
+ATC GUARDIAN IS RESEARCH AND SIMULATION SOFTWARE.
+
+IT IS NOT CERTIFIED FOR AIR TRAFFIC CONTROL.
+
+IT MUST NOT BE USED TO DIRECT, SEPARATE, NAVIGATE, OR CONTROL REAL AIRCRAFT.
+
+DO NOT CONNECT EXPERIMENTAL BUILDS TO OPERATIONAL AVIATION INFRASTRUCTURE.
+
+==================================================
+58. WORKING STYLE
+==================================================
+
+Act as my senior software engineer, systems architect, aviation-software research partner, UI designer, and coding mentor.
+
+I am still learning software development.
+
+Do not simply create thousands of lines of code that I do not understand.
+
+Explain:
+
+what each subsystem does
+
+why it exists
+
+how components communicate
+
+what safety problem it addresses
+
+Build this project incrementally.
+
+Every release must run.
+
+Every release should have tests.
+
+Maintain:
+
+README
+CHANGELOG
+ROADMAP
+architecture documentation
+
+Do not fake real aviation certification.
+
+Do not fabricate aviation data.
+
+When aviation standards or operational rules are uncertain, identify them as areas requiring authoritative research.
+
+Start by building ATC Guardian v0.1.
+
+Tasks:
+
+1. Design architecture.
+2. Create repository structure.
+3. Create professional README.
+4. Create aircraft data model.
+5. Create simulation engine.
+6. Create radar display.
+7. Create simulated weather engine.
+8. Create clearance engine.
+9. Create trajectory prediction.
+10. Create missed-turn detection.
+11. Create basic conflict detection.
+12. Create weather-path intersection detection.
+13. Create human takeover mode.
+14. Create pilot human-request feature.
+15. Create event recorder.
+16. Create automated tests.
+17. Run/debug the system.
+18. Provide the completed initial project files.
+19. Explain how I can run it locally.
+20. Explain how I can put it on GitHub.
+
+The long-term objective is to evolve ATC Guardian over many versions into a highly mature aviation automation research platform rather than generating one disposable demonstration.

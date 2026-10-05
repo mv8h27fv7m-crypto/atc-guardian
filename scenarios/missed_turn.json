@@ -1,0 +1,11 @@
+{
+  "id": "missed_turn", "name": "The forgotten turn", "description": "A C172 climbs as instructed but misses its turn. Watch clearance memory and weather prediction, then take ownership and restore the simulated pilot's response.",
+  "aircraft": [
+    {"callsign":"N123AB","aircraft_type":"C172 (synthetic)","x_nm":6,"y_nm":-3,"altitude_ft":3500,"heading_deg":270,"speed_kt":105,"pilot_follows_turn":false,"squawk":"4271"},
+    {"callsign":"JET204","aircraft_type":"Jet (synthetic)","x_nm":-9,"y_nm":7,"altitude_ft":11000,"heading_deg":100,"speed_kt":220,"squawk":"2154"},
+    {"callsign":"N551XY","aircraft_type":"C182 (synthetic)","x_nm":8,"y_nm":8,"altitude_ft":8500,"heading_deg":195,"speed_kt":125,"squawk":"5230"},
+    {"callsign":"N789EF","aircraft_type":"Twin (synthetic)","x_nm":-11,"y_nm":-9,"altitude_ft":6500,"heading_deg":225,"speed_kt":145,"squawk":"6312"}
+  ],
+  "weather": [{"id":"cell_a","label":"Convective cell A","kind":"CONVECTIVE","x_nm":-3,"y_nm":-3,"radius_nm":2.4,"floor_ft":0,"ceiling_ft":18000,"severity":"WARNING"}],
+  "clearances":[{"callsign":"N123AB","clearance":{"heading_deg":310,"altitude_ft":5000,"turn":"right"},"readback":"N123AB heading 310 altitude 5000"}]
+}
