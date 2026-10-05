@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+
+# Environment / secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Logs / local data
+*.log
+*.sqlite
+*.sqlite3
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
